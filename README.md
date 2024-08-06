@@ -23,32 +23,114 @@ This project is a basic Spring Boot application that demonstrates the use of Spr
 
 ## API Endpoints
 
-### Student Endpoints
+### User Endpoints()
+#### (First sign in before accessing any api endpoint as they require authorization)
 
-- **Create a Student**
-    - **URL:** `/api/students`
+- **Login (Obtain JWT Token)**
+    - **URL:** `/signin`
     - **Method:** POST
     - **Request Body:**
       ```json
       {
-        "name": "John Doe",
-        "address": "123 Main St",
+        "username": "admin",
+        "password": "admin"
+      }
+      ```
+    - **Response:**
+      ```json
+      {
+        "jwtToken": "<JWT_TOKEN>",
+        "username": "admin",
+        "roles": ["ROLE_ADMIN"] 
+      }
+      ```
+
+### Student Endpoints
+
+- **Create a Student (Admin only)**
+    - **URL:** `/api/students/create`
+    - **Method:** POST
+    - **Headers:**
+        - `Authorization: Bearer <JWT_TOKEN>`
+    - **Request Body:**
+      ```json
+      {
+        "name": "Jane Doe",
+        "address": "456 Elm St",
         "subjects": [
-          {"name": "Math"},
-          {"name": "Science"}
+          {"name": "English"},
+          {"name": "History"}
+        ]
+      }
+      ```
+    - **Response:**
+      ```json
+      {
+        "id": 1,
+        "name": "Jane Doe",
+        "address": "456 Elm St",
+        "subjects": [
+          {"id": 1, "name": "English"},
+          {"id": 2, "name": "History"}
         ]
       }
       ```
 
-- **Get List of All Students**
-    - **URL:** `/api/students`
+- **Get List of All Students (Admin only)**
+    - **URL:** `/api/students/get-all`
     - **Method:** GET
+    - **Headers:**
+        - `Authorization: Bearer <JWT_TOKEN>`
+    - **Response:**
+      ```json
+      [
+        {
+          "id": 1,
+          "name": "Jane Doe",
+          "address": "456 Elm St",
+          "subjects": [
+            {"id": 1, "name": "English"},
+            {"id": 2, "name": "History"}
+          ]
+        },
+        ...
+      ]
+      ```
 
 ### Subject Endpoints
 
-- **Get List of All Subjects**
-    - **URL:** `/api/subjects`
+- **Get List of All Subjects (Student and Admin)**
+    - **URL:** `/api/subjects/get-all`
     - **Method:** GET
+    - **Headers:**
+        - `Authorization: Bearer <JWT_TOKEN>`
+    - **Response:**
+      ```json
+      [
+        {"id": 1, "name": "English"},
+        {"id": 2, "name": "History"},
+        ...
+      ]
+      ```
+
+- **Create a Subject (Admin only)**
+    - **URL:** `/api/subjects/create`
+    - **Method:** POST
+    - **Headers:**
+        - `Authorization: Bearer <JWT_TOKEN>`
+    - **Request Body:**
+      ```json
+      {
+        "name": "Physics"
+      }
+      ```
+    - **Response:**
+      ```json
+      {
+        "id": 3,
+        "name": "Physics"
+      }
+      ```
 
 ## Security
 
@@ -56,7 +138,6 @@ This project is a basic Spring Boot application that demonstrates the use of Spr
 
 - **Student Role**
     - Can view the list of subjects
-    - Can view the list of students
 
 - **Admin Role**
     - Can create a student
@@ -67,11 +148,12 @@ This project is a basic Spring Boot application that demonstrates the use of Spr
 
 - JWT is used for securing the API endpoints.
 - Users can log in with their credentials to obtain a JWT token, which should be included in the `Authorization` header of subsequent requests.
+- Select `Bearer Token` in `Auth Type`
 
 ## Database Configuration
 
 - The project uses an H2 in-memory database for simplicity.
-- No additional setup is required for the database.
+- The `schema.sql` file is used to initialize the database schema.
 
 ## Setup and Running the Application
 
@@ -86,7 +168,7 @@ This project is a basic Spring Boot application that demonstrates the use of Spr
     ./mvnw clean install
    ```
 
-2. **Run Command**
+3. **Run Command**
     ```js
     ./mvnw spring-boot:run
    ```
