@@ -30,35 +30,11 @@ import java.util.stream.Collectors;
 @RestController
 public class UserController {
 
-//    @Autowired
-//    StudentService studentService;
-//
-//    @Autowired
-//    SubjectService subjectService
-
     @Autowired
     private JwtUtils jwtUtils;
 
     @Autowired
     private AuthenticationManager authenticationManager;
-
-    @GetMapping("/hello")
-    public String sayHello(){
-        return "Hello";
-    }
-
-
-    @PreAuthorize("hasRole('STUDENT')")
-    @GetMapping("/user")
-    public String userEndpoint(){
-        return "Hello, User!";
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/admin")
-    public String adminEndpoint(){
-        return "Hello, Admin!";
-    }
 
 
     @PostMapping("/signin")
